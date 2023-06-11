@@ -60,7 +60,7 @@ public class Window extends JFrame implements Runnable, CellsState {
             int buttonHeight = Config.HEIGHT * Config.cellSIZE / 12;
 
             setBounds(0, 0, Config.WIDTH * Config.cellSIZE, Config.HEIGHT * Config.cellSIZE);
-            setBackground(Color.CYAN);
+            setBackground(Config.MENU_COLOR);
 
             JButton jButton1 = new JButton("START GAME");
             jButton1.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 4,

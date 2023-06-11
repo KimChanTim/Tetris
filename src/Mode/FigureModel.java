@@ -29,7 +29,7 @@ public class FigureModel {
             case J1_FORM -> color = Color.YELLOW;
             case L1_FORM -> color = Color.GREEN;
             case T1_FORM -> color = Color.BLUE;
-            case S1_FORM -> color = Color.MAGENTA;
+            case S1_FORM -> color = Color.ORANGE;
             case Z1_FORM -> color = Color.PINK;
         }
     }
