@@ -19,7 +19,7 @@ public class Window extends JFrame implements Runnable, CellsState {
         cells = new Cell[Config.WIDTH][Config.HEIGHT];
         initFrame();
         initStartMenu();
-
+        //
         timer = new Timer(200, new TimeAction());
     }
 
