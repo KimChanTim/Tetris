@@ -7,7 +7,6 @@ import Mode.FigureModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.ObjectInputFilter;
 
 
 public class Window extends JFrame implements Runnable, CellsState {
@@ -19,7 +18,7 @@ public class Window extends JFrame implements Runnable, CellsState {
         cells = new Cell[Config.WIDTH][Config.HEIGHT];
         initFrame();
         initStartMenu();
-        //
+
         timer = new Timer(200, new TimeAction());
     }
 
