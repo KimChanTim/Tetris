@@ -9,9 +9,7 @@ public class Cell extends JPanel {
     public Cell(int x, int y) {
         setBounds(x * Config.cellSIZE, y * Config.cellSIZE,
                 Config.cellSIZE, Config.cellSIZE);
-        setBackground(Config.GAME_COLOR);
         condition = false;
-        color = Config.GAME_COLOR;
     }
 
     public boolean isOccupied() {

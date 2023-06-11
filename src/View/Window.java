@@ -10,22 +10,28 @@ import java.awt.event.*;
 
 
 public class Window extends JFrame implements Runnable, CellsState {
-    private Cell[][] cells;
+    private final Cell[][] cells;
     private FigureModel figure;
-    private Timer timer;
+    private final Timer timer;
+    private final Menu menu;
 
     public Window() {
         cells = new Cell[Config.WIDTH][Config.HEIGHT];
         initFrame();
-        initStartMenu();
+        initCells();
 
+        menu = new Menu();
+        addKeyListener(new KeyReader());
+        setFocusable(false);
+        requestFocusInWindow();
         timer = new Timer(200, new TimeAction());
+        menu.showStartMenu();
     }
 
     public void startGame() {
-        initCells();
+        showCells();
         javax.swing.SwingUtilities.invokeLater(this);
-        addKeyListener(new KeyReader());
+
         timer.start();
         setFocusable(true);
         requestFocusInWindow();
@@ -40,7 +46,7 @@ public class Window extends JFrame implements Runnable, CellsState {
         pack();
         Insets insets = getInsets();
         setSize(Config.WIDTH * Config.cellSIZE + insets.left + insets.right,
-                        Config.HEIGHT * Config.cellSIZE + insets.top + insets.bottom);
+                Config.HEIGHT * Config.cellSIZE + insets.top + insets.bottom);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Tetris");
@@ -48,26 +54,85 @@ public class Window extends JFrame implements Runnable, CellsState {
         setVisible(true);
     }
 
-    private void initStartMenu() {
-        JButton jButton1 = new JButton("START GAME");
-        jButton1.setBounds(Config.WIDTH * Config.cellSIZE / 4, Config.HEIGHT * Config.cellSIZE / 4,
-                Config.WIDTH * Config.cellSIZE / 2, Config.HEIGHT * Config.cellSIZE / 12);
-        add(jButton1);
-        jButton1.addActionListener(e -> {
-            remove(jButton1);
-            startGame();
-        });
+    class Menu extends JPanel {
+        public Menu() {
+            int buttonWidth = Config.WIDTH * Config.cellSIZE / 2;
+            int buttonHeight = Config.HEIGHT * Config.cellSIZE / 12;
+
+            setBounds(0, 0, Config.WIDTH * Config.cellSIZE, Config.HEIGHT * Config.cellSIZE);
+            setBackground(Color.CYAN);
+
+            JButton jButton1 = new JButton("START GAME");
+            jButton1.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 4,
+                    buttonWidth, buttonHeight);
+            add(jButton1);
+            jButton1.addActionListener(e -> {
+                hideStartMenu();
+                startGame();
+            });
+
+            JButton jButton2 = new JButton("ABOUT");
+            jButton2.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 4 + (int)(buttonHeight * 1.2),
+                    buttonWidth, buttonHeight);
+            add(jButton2);
+            jButton2.addActionListener(e -> {
+
+            });
+
+            JButton jButton3 = new JButton("SCORES");
+            jButton3.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 4 + (int)(buttonHeight * 2.4),
+                    buttonWidth, buttonHeight);
+            add(jButton3);
+            jButton3.addActionListener(e -> {
+
+            });
+
+            JButton jButton4 = new JButton("EXIT");
+            jButton4.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 4 + (int)(buttonHeight * 3.6),
+                    buttonWidth, buttonHeight);
+            add(jButton4);
+            jButton4.addActionListener(e -> {
+                Window.this.setVisible(false);
+                Window.this.dispose();
+                System.exit(0);
+            });
+
+            setLayout(null);
+            Window.this.add(this);
+        }
+
+        private void showStartMenu() {
+            setVisible(true);
+        }
+
+        private void hideStartMenu() {
+            setVisible(false);
+        }
     }
 
-    private void hideStartMenu() {
-
-    }
 
     private void initCells() {
         for (int x = 0; x < Config.WIDTH; x++) {
             for (int y = 0; y < Config.HEIGHT; y++) {
                 cells[x][y] = new Cell(x, y);
                 add(cells[x][y]);
+                cells[x][y].setVisible(false);
+            }
+        }
+    }
+    private void showCells() {
+        for (int x = 0; x < Config.WIDTH; x++) {
+            for (int y = 0; y < Config.HEIGHT; y++) {
+                cells[x][y].setColor(Config.GAME_COLOR);
+                cells[x][y].setVisible(true);
+            }
+        }
+    }
+    private void hideCells() {
+        for (int x = 0; x < Config.WIDTH; x++) {
+            for (int y = 0; y < Config.HEIGHT; y++) {
+                cells[x][y].setVisible(false);
+                cells[x][y].deOccupied();
             }
         }
     }
@@ -75,9 +140,11 @@ public class Window extends JFrame implements Runnable, CellsState {
     private void addFigure() {
         figure = new FigureModel(this);
         if (!figure.canPlaceFigure()) {
-            setVisible(false);
-            dispose();
-            System.exit(0);
+            timer.stop();
+            setFocusable(false);
+            requestFocusInWindow();
+            hideCells();
+            menu.showStartMenu();
         }
         showFigure();
     }
@@ -183,7 +250,4 @@ public class Window extends JFrame implements Runnable, CellsState {
             destroyLines();
         }
     }
-
 }
-
-
