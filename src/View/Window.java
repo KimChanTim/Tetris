@@ -5,6 +5,7 @@ import Mode.Coord;
 import Mode.FigureModel;
 
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -14,6 +15,9 @@ public class Window extends JFrame implements Runnable, CellsState {
     private FigureModel figure;
     private final Timer timer;
     private final Menu menu;
+    private JTextField jTextField;
+    private JTextArea jTextArea;
+    private Integer scores;
 
     public Window() {
         cells = new Cell[Config.WIDTH][Config.HEIGHT];
@@ -29,13 +33,12 @@ public class Window extends JFrame implements Runnable, CellsState {
     }
 
     public void startGame() {
-        showCells();
-        javax.swing.SwingUtilities.invokeLater(this);
-
+        showCellsScores();
         timer.start();
         setFocusable(true);
         requestFocusInWindow();
         addFigure();
+        scores = 0;
     }
 
     @Override
@@ -46,10 +49,22 @@ public class Window extends JFrame implements Runnable, CellsState {
         pack();
         Insets insets = getInsets();
         setSize(Config.WIDTH * Config.cellSIZE + insets.left + insets.right,
-                Config.HEIGHT * Config.cellSIZE + insets.top + insets.bottom);
+                (Config.HEIGHT + 1) * Config.cellSIZE + insets.top + insets.bottom);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Tetris");
+
+        jTextField = new JTextField();
+        add(jTextField);
+        jTextField.setBounds(0, Config.HEIGHT * Config.cellSIZE, Config.WIDTH * Config.cellSIZE, Config.cellSIZE);
+        jTextField.setVisible(false);
+
+        jTextArea = new JTextArea();
+        add(jTextArea);
+        jTextArea.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 3,
+                Config.WIDTH * Config.cellSIZE / 2, Config.HEIGHT * Config.cellSIZE / 3);
+        jTextArea.setVisible(false);
+
         setLayout(null);
         setVisible(true);
     }
@@ -59,44 +74,68 @@ public class Window extends JFrame implements Runnable, CellsState {
             int buttonWidth = Config.WIDTH * Config.cellSIZE / 2;
             int buttonHeight = Config.HEIGHT * Config.cellSIZE / 12;
 
-            setBounds(0, 0, Config.WIDTH * Config.cellSIZE, Config.HEIGHT * Config.cellSIZE);
+            setBounds(0, 0, Config.WIDTH * Config.cellSIZE, (Config.HEIGHT + 1) * Config.cellSIZE);
             setBackground(Config.MENU_COLOR);
 
             JButton jButton1 = new JButton("START GAME");
-            jButton1.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 4,
+            jButton1.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 3,
                     buttonWidth, buttonHeight);
             add(jButton1);
+            jButton1.setBackground(Color.WHITE);
+
+            JButton jButton2 = new JButton("ABOUT");
+            jButton2.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 3 + (int)(buttonHeight * 1.2),
+                    buttonWidth, buttonHeight);
+            add(jButton2);
+            jButton2.setBackground(Color.WHITE);
+
+            JButton jButton3 = new JButton("SCORES");
+            jButton3.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 3 + (int)(buttonHeight * 2.4),
+                    buttonWidth, buttonHeight);
+            add(jButton3);
+            jButton3.setBackground(Color.WHITE);
+
+            JButton jButton4 = new JButton("EXIT");
+            jButton4.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 3 + (int)(buttonHeight * 3.6),
+                    buttonWidth, buttonHeight);
+            add(jButton4);
+            jButton4.setBackground(Color.WHITE);
+
+            JButton jButton5 = new JButton("CLOSE");
+            jButton5.setBounds(Config.WIDTH * Config.cellSIZE / 4,2 * Config.HEIGHT * Config.cellSIZE / 3,
+                    buttonWidth, buttonHeight);
+            add(jButton5);
+            jButton5.setBackground(Color.WHITE);
+
             jButton1.addActionListener(e -> {
                 hideStartMenu();
                 startGame();
             });
-
-            JButton jButton2 = new JButton("ABOUT");
-            jButton2.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 4 + (int)(buttonHeight * 1.2),
-                    buttonWidth, buttonHeight);
-            add(jButton2);
             jButton2.addActionListener(e -> {
 
             });
-
-            JButton jButton3 = new JButton("SCORES");
-            jButton3.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 4 + (int)(buttonHeight * 2.4),
-                    buttonWidth, buttonHeight);
-            add(jButton3);
             jButton3.addActionListener(e -> {
-
+                jTextArea.setVisible(true);
+                jButton5.setVisible(true);
+                jButton1.setVisible(false);
+                jButton2.setVisible(false);
+                jButton3.setVisible(false);
+                jButton4.setVisible(false);
             });
-
-            JButton jButton4 = new JButton("EXIT");
-            jButton4.setBounds(Config.WIDTH * Config.cellSIZE / 4,Config.HEIGHT * Config.cellSIZE / 4 + (int)(buttonHeight * 3.6),
-                    buttonWidth, buttonHeight);
-            add(jButton4);
             jButton4.addActionListener(e -> {
                 Window.this.setVisible(false);
                 Window.this.dispose();
                 System.exit(0);
             });
-
+            jButton5.addActionListener(e -> {
+                jTextArea.setVisible(false);
+                jButton5.setVisible(false);
+                jButton1.setVisible(true);
+                jButton2.setVisible(true);
+                jButton3.setVisible(true);
+                jButton4.setVisible(true);
+            });
+            jButton5.setVisible(false);
             setLayout(null);
             Window.this.add(this);
         }
@@ -120,21 +159,26 @@ public class Window extends JFrame implements Runnable, CellsState {
             }
         }
     }
-    private void showCells() {
+    private void showCellsScores() {
         for (int x = 0; x < Config.WIDTH; x++) {
             for (int y = 0; y < Config.HEIGHT; y++) {
                 cells[x][y].setColor(Config.GAME_COLOR);
                 cells[x][y].setVisible(true);
             }
         }
+
+        jTextField.setVisible(true);
+        jTextField.setText("SCORES: 0");
     }
-    private void hideCells() {
+    private void hideCellsScores() {
         for (int x = 0; x < Config.WIDTH; x++) {
             for (int y = 0; y < Config.HEIGHT; y++) {
                 cells[x][y].setVisible(false);
                 cells[x][y].deOccupied();
             }
         }
+
+        jTextField.setVisible(false);
     }
 
     private void addFigure() {
@@ -143,7 +187,7 @@ public class Window extends JFrame implements Runnable, CellsState {
             timer.stop();
             setFocusable(false);
             requestFocusInWindow();
-            hideCells();
+            hideCellsScores();
             menu.showStartMenu();
         }
         showFigure();
@@ -231,6 +275,8 @@ public class Window extends JFrame implements Runnable, CellsState {
                     setCellColor(x, 0, Config.GAME_COLOR);
                     setCellCondition(x, 0, false);
                 }
+                scores++;
+                jTextField.setText("SCORES: " + scores.toString());
             }
         }
     }
