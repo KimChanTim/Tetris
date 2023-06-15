@@ -1,13 +1,9 @@
 package View;
 
-import Mode.Model;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Map;
+
 
 public class Menu extends JPanel {
     private final JButton jButton1;
