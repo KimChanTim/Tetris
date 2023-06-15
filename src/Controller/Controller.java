@@ -37,13 +37,15 @@ public class Controller {
         });
 
         model.getMenu().getjButton2().addActionListener(e -> {
-            model.updateStatistic();
+            if (client.isConnected())
+                model.updateStatistic();
         });
 
         model.getMenu().getjButton3().addActionListener(e -> {
             model.getWindow().setVisible(false);
             model.getWindow().dispose();
-            client.closeSession();
+            if (client.isConnected())
+                client.closeSession();
             System.exit(0);
         });
 
