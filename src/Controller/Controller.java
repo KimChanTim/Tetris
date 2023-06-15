@@ -1,14 +1,17 @@
 package Controller;
 
+import Client.Client;
 import Mode.Model;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Controller {
-    private Model model;
+    private final Model model;
+    private final Client client;
     public Controller() {
-        model = new Model();
+        client = new Client("localhost", 5000);
+        model = new Model(client);
         initButtons();
         model.getGameField().addKeyListener(new KeyReader());
     }
@@ -34,13 +37,32 @@ public class Controller {
         });
 
         model.getMenu().getjButton2().addActionListener(e -> {
-
+            model.updateStatistic();
         });
 
         model.getMenu().getjButton3().addActionListener(e -> {
             model.getWindow().setVisible(false);
             model.getWindow().dispose();
+            client.closeSession();
             System.exit(0);
+        });
+
+        model.getMenu().getjButton4().addActionListener(e -> {
+            model.updateStatistic();
+        });
+
+        model.getMenu().getjButton5().addActionListener(e -> {
+            model.closeStatistic();
+        });
+
+        model.getMenu().getjButton6().addActionListener(e -> {
+            client.setName(model.getMenu().jTextField.getText());
+            model.getMenu().label1.setVisible(false);
+            model.getMenu().jTextField.setVisible(false);
+
+            model.getMenu().getjButton6().setVisible(false);
+            model.getMenu().getjButton1().setVisible(true);
+            model.getMenu().getjButton2().setVisible(true);
         });
     }
 }

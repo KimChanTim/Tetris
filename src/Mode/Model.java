@@ -1,5 +1,6 @@
 package Mode;
 
+import Client.Client;
 import View.*;
 import View.Window;
 import View.Menu;
@@ -7,9 +8,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Map;
 
 
 public class Model implements CellsState {
+    private final Client client;
     private final Window window;
     private final Menu menu;
     private final GameField gameField;
@@ -18,7 +23,8 @@ public class Model implements CellsState {
     private CurentFigure figure;
     private Integer scores;
 
-    public Model() {
+    public Model(Client client) {
+        this.client = client;
         cells = new Cell[Config.WIDTH][Config.HEIGHT];
         window = new Window();
 
@@ -50,12 +56,30 @@ public class Model implements CellsState {
         figure = new CurentFigure(this);
         if (!figure.canPlaceFigure()) {
             timer.stop();
+            Boolean isNewRecord = false;
+            if (client.isConnected()) {
+                client.sendMessage(client.getName() + " " + scores.toString());
+                isNewRecord = (Boolean) client.recvObject();
+                System.out.println(isNewRecord);
+            }
             gameField.setFocusable(false);
             gameField.requestFocusInWindow();
             gameField.hideCellsScores();
-            menu.showStartMenu();
+            menu.showStartMenu(isNewRecord, scores);
         }
         showFigure();
+    }
+
+    public void updateStatistic() {
+        client.sendMessage("U");
+        ArrayList<String> strings = (ArrayList<String>) client.recvObject();
+        ArrayList<Integer> integers = (ArrayList<Integer>) client.recvObject();
+        System.out.println(strings);
+        System.out.println(integers);
+        menu.showStatisticPanel(strings, integers);
+    }
+    public void closeStatistic() {
+        menu.hideStatisticPanel();
     }
 
     private void showFigure() {

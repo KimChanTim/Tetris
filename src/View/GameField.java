@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class GameField extends JPanel {
     private final Cell[][] cells;
-    private JTextField jTextField;
+    private final JTextField jTextField;
 
     public GameField(Cell[][] cells) {
         this.cells = cells;

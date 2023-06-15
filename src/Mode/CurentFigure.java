@@ -6,7 +6,7 @@ import View.Config;
 import java.awt.*;
 
 public class CurentFigure {
-    private CellsState state;
+    private final CellsState state;
     private Figure figure;
     private Coord coord;
     private boolean landed;
