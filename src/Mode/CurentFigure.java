@@ -5,7 +5,7 @@ import View.Config;
 
 import java.awt.*;
 
-public class FigureModel {
+public class CurentFigure {
     private CellsState state;
     private Figure figure;
     private Coord coord;
@@ -13,7 +13,7 @@ public class FigureModel {
     private int ticks;
     private Color color;
 
-    public FigureModel(CellsState cellsState) {
+    public CurentFigure(CellsState cellsState) {
         figure = Figure.getRandom();
         coord = new Coord(Config.WIDTH / 2 - 1, -figure.leftCorner.y());
         state = cellsState;
@@ -93,4 +93,5 @@ public class FigureModel {
             moveFigure(-1, 0);
         }
     }
+
 }
