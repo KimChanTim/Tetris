@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Server/Server.iml" filepath="$PROJECT_DIR$/Server/Server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Tetris.iml" filepath="$PROJECT_DIR$/Tetris.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TetrisOnline.iml" filepath="$PROJECT_DIR$/TetrisOnline.iml" />
     </modules>
   </component>
 </project>
